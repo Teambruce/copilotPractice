@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tulsa Glow Ledger</title>
+<meta name="description" content="Every Tulsa-area med spa membership compared side by side: monthly fee, what's included, member Botox price, and cancellation terms.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Outfit:wght@300..700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: Tulsa Art Deco ledger. Square, stepped-corner panels on a porcelain ground;
+   one brass sunburst behind the hero sheet; prices set in mono like a bill of sale. */
+:root {
+  --bg: #FAF4F6;
+  --surface: #FFFFFF;
+  --sunk: #F3E9ED;
+  --ink: #26121F;
+  --muted: #6B5562;
+  --line: #E4D3DA;
+  --teal: #0F5B5F;
+  --rose: #C42B59;
+  --on-rose: #FFFFFF;
+  --brass: #A47728;
+  --band: #24101D;
+  --band-ink: #F8ECF0;
+  --band-muted: #C9B2BE;
+  --band-line: #4A2E40;
+  --good: #1B7A54;
+  --warn: #B4491C;
+
+  --display: "Bodoni Moda", "Didot", "Bodoni MT", Georgia, serif;
+  --body: "Outfit", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --mono: "DM Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --step: 12px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #1A0D16; --surface: #26141F; --sunk: #201019; --ink: #F7EBF0; --muted: #BBA4B0;
+    --line: #40293A; --teal: #76CBC8; --rose: #F26D92; --on-rose: #1A0D16; --brass: #DDB56A;
+    --band: #0F070C; --band-ink: #F7EBF0; --band-muted: #BBA4B0; --band-line: #3A2433;
+    --good: #6FD0A3; --warn: #F0996B;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #1A0D16; --surface: #26141F; --sunk: #201019; --ink: #F7EBF0; --muted: #BBA4B0;
+  --line: #40293A; --teal: #76CBC8; --rose: #F26D92; --on-rose: #1A0D16; --brass: #DDB56A;
+  --band: #0F070C; --band-ink: #F7EBF0; --band-muted: #BBA4B0; --band-line: #3A2433;
+  --good: #6FD0A3; --warn: #F0996B;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6; font-weight: 350;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul, ol, dl, dd, figure { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 3px; }
+
+.wrap {
+  max-width: 1120px; margin-inline: auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.band { padding-block: clamp(3.5rem, 8vw, 6rem); }
+.band--dark { background: var(--band); color: var(--band-ink); }
+.band--sunk { background: var(--sunk); }
+
+h1, h2 { font-family: var(--display); font-weight: 500; letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-size: clamp(2.5rem, 6.4vw, 4.5rem); line-height: 1.02; }
+h2 { font-size: clamp(1.9rem, 4vw, 2.9rem); line-height: 1.08; }
+h3 { font-family: var(--body); font-weight: 600; font-size: 1.125rem; line-height: 1.3; }
+h1 em, h2 em { font-style: italic; color: var(--rose); }
+.lede { font-size: clamp(1.1rem, 1.6vw, 1.25rem); color: var(--muted); max-width: 34em; }
+.band--dark .lede { color: var(--band-muted); }
+.eyebrow {
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--teal);
+}
+.band--dark .eyebrow { color: var(--brass); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.stack { display: flex; flex-direction: column; gap: 1.25rem; }
+.head { display: flex; flex-direction: column; gap: 1rem; max-width: 46rem; margin-bottom: clamp(2rem, 4vw, 3rem); }
+
+/* Buttons and forms */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font: 600 1rem/1 var(--body); letter-spacing: 0.01em;
+  padding: 1rem 1.4rem; border: 0; cursor: pointer; text-decoration: none;
+  background: var(--rose); color: var(--on-rose);
+  transition: transform .15s ease, filter .15s ease;
+}
+.btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn--ghost { background: transparent; color: var(--band-ink); box-shadow: inset 0 0 0 1.5px var(--brass); }
+.signup { display: flex; flex-direction: column; gap: 0.6rem; max-width: 30rem; }
+.signup__row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.signup input[type="email"], .signup input[type="text"] {
+  flex: 1 1 13rem; min-width: 0;
+  font: 400 1rem/1.2 var(--body); color: var(--ink);
+  padding: 0.95rem 1rem; background: var(--surface);
+  border: 1.5px solid var(--line); border-radius: 0;
+}
+.signup input::placeholder { color: var(--muted); }
+.signup input:focus-visible { outline: 2px solid var(--teal); outline-offset: 0; border-color: var(--teal); }
+.signup .btn { flex: 1 1 auto; }
+.fine { font-size: 0.875rem; color: var(--muted); }
+.band--dark .fine { color: var(--band-muted); }
+.signup__done { font-weight: 500; color: var(--good); }
+.band--dark .signup input { background: var(--band); color: var(--band-ink); border-color: var(--band-line); }
+.band--dark .signup input::placeholder { color: var(--band-muted); }
+.band--dark .signup__done { color: var(--brass); }
+
+/* Header */
+.top { padding-block: 1.1rem; border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.brand { display: flex; align-items: baseline; gap: 0.55rem; text-decoration: none; }
+.brand__name { font-family: var(--display); font-size: 1.45rem; font-weight: 600; letter-spacing: -0.01em; }
+.brand__name i { color: var(--rose); font-weight: 500; }
+.brand__tag { font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); }
+.top nav { display: flex; align-items: center; gap: 1.25rem; font-size: 0.95rem; }
+.top nav a { text-decoration: none; }
+.top nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+.top nav .btn { padding: 0.7rem 1rem; font-size: 0.9rem; }
+.top nav .btn:hover { text-decoration: none; }
+
+/* Hero */
+.hero { padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 5.5rem); overflow: hidden; }
+.hero__grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: clamp(2rem, 5vw, 4.5rem); align-items: center; }
+.hero__copy { display: flex; flex-direction: column; gap: 1.5rem; min-width: 0; }
+.towns { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; }
+.towns li + li::before { content: "◆"; font-size: 0.5rem; color: var(--brass); margin-right: 0.9rem; vertical-align: middle; }
+.hero__sheet { position: relative; min-width: 0; }
+.fan {
+  position: absolute; left: 50%; bottom: 38%; width: 150%; aspect-ratio: 2 / 1; max-width: none;
+  transform: translateX(-50%);
+  background: repeating-conic-gradient(from -90deg at 50% 100%, var(--brass) 0 0.5deg, transparent 0.5deg 6deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 100%, transparent 0 22%, #000 22.5% 68%, transparent 70%);
+          mask-image: radial-gradient(circle at 50% 100%, transparent 0 22%, #000 22.5% 68%, transparent 70%);
+  opacity: 0.55; pointer-events: none;
+}
+
+/* Stepped (ziggurat) corner panel */
+.deco {
+  --clip: polygon(var(--step) 0, calc(100% - var(--step)) 0, calc(100% - var(--step)) var(--step), 100% var(--step),
+    100% calc(100% - var(--step)), calc(100% - var(--step)) calc(100% - var(--step)), calc(100% - var(--step)) 100%,
+    var(--step) 100%, var(--step) calc(100% - var(--step)), 0 calc(100% - var(--step)), 0 var(--step), var(--step) var(--step));
+  position: relative; background: var(--brass); padding: 1.5px; clip-path: var(--clip);
+}
+.deco__in { background: var(--surface); clip-path: var(--clip); padding: clamp(1.5rem, 3vw, 2.1rem); }
+
+.sheet__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+  padding-bottom: 0.9rem; border-bottom: 1.5px solid var(--ink); }
+.sheet__title { font-family: var(--display); font-size: 1.3rem; font-weight: 600; }
+.sheet__meta { font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.plan { padding-block: 1rem; border-bottom: 1px dashed var(--line); display: flex; flex-direction: column; gap: 0.55rem; }
+.plan__top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+.plan__name { font-weight: 600; min-width: 0; }
+.plan__fee { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 1.05rem; font-weight: 500; white-space: nowrap; color: var(--teal); }
+.plan__fee small { font-size: 0.75rem; color: var(--muted); font-weight: 400; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.chip { font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.04em; padding: 0.25rem 0.5rem; background: var(--sunk); color: var(--muted); }
+.chip b { font-weight: 500; color: var(--ink); }
+.sheet__foot { padding-top: 0.9rem; font-size: 0.78rem; line-height: 1.5; color: var(--muted); }
+
+/* Problem */
+.gripes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--band-line); }
+.gripes li { padding: 1.75rem 1.5rem 0.5rem 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.gripes li + li { padding-left: 1.5rem; border-left: 1px solid var(--band-line); }
+.gripes q { font-family: var(--display); font-style: italic; font-size: 1.45rem; line-height: 1.2; quotes: "\201C" "\201D"; color: var(--band-ink); }
+.gripes p { color: var(--band-muted); font-size: 1rem; }
+
+/* Calculator */
+.calc { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(1.5rem, 4vw, 3rem); align-items: start; }
+.calc__inputs { display: flex; flex-direction: column; gap: 1.4rem; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 0.45rem; }
+.field__label { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-weight: 500; }
+.field__label output { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--teal); white-space: nowrap; }
+.field input[type="range"] { width: 100%; accent-color: var(--rose); margin: 0; height: 1.5rem; }
+.field small { color: var(--muted); font-size: 0.85rem; }
+.toggle { display: flex; align-items: flex-start; gap: 0.7rem; font-weight: 500; cursor: pointer; }
+.toggle input { width: 1.2rem; height: 1.2rem; margin: 0.2rem 0 0; accent-color: var(--rose); flex: none; }
+.toggle small { display: block; font-weight: 350; color: var(--muted); font-size: 0.85rem; }
+.result { display: flex; flex-direction: column; gap: 1.1rem; }
+.result__verdict { font-family: var(--display); font-size: clamp(1.5rem, 2.6vw, 2rem); line-height: 1.15; font-weight: 500; text-wrap: balance; }
+.result__verdict[data-tone="good"] strong { color: var(--good); }
+.result__verdict[data-tone="bad"] strong { color: var(--warn); }
+.result__verdict strong { font-weight: 600; }
+.bars { display: flex; flex-direction: column; gap: 0.8rem; }
+.bar__row { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.bar__track { height: 14px; background: var(--sunk); }
+.bar__fill { height: 100%; width: 0; background: var(--muted); transition: width .35s ease; }
+.bar__fill--member { background: var(--teal); }
+.result__note { font-size: 0.92rem; color: var(--muted); border-top: 1px dashed var(--line); padding-top: 0.9rem; }
+.result__note b { color: var(--ink); font-weight: 600; }
+
+/* What we compare */
+.compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1.5px solid var(--ink); }
+.compare li { padding: 1.6rem 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: 0.25rem 1rem; align-content: start; }
+.compare li:nth-child(odd) { padding-right: 2rem; }
+.compare li:nth-child(even) { padding-left: 2rem; border-left: 1px solid var(--line); }
+.compare .glyph { grid-row: span 2; font-family: var(--display); font-size: 2.4rem; line-height: 1; color: var(--brass); font-style: italic; }
+.compare p { color: var(--muted); }
+
+/* Steps */
+.steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.25rem, 3vw, 2.5rem); counter-reset: step; }
+.steps li { counter-increment: step; display: flex; flex-direction: column; gap: 0.6rem; padding-top: 1.1rem; border-top: 1.5px solid var(--ink); }
+.steps li::before { content: "Step " counter(step); font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rose); }
+.steps p { color: var(--muted); }
+
+/* Money / trust */
+.trust { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(1.5rem, 5vw, 4rem); align-items: start; }
+.rules { display: flex; flex-direction: column; }
+.rules li { display: grid; grid-template-columns: 1.5rem minmax(0, 1fr); gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+.rules li:first-child { border-top: 1px solid var(--line); }
+.rules li::before { content: "◆"; color: var(--brass); font-size: 0.7rem; line-height: 1.7rem; }
+
+/* FAQ */
+.faq { max-width: 46rem; border-top: 1.5px solid var(--ink); }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; gap: 1rem; align-items: baseline; padding: 1.15rem 0; font-weight: 600; font-size: 1.1rem; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--mono); font-size: 1.3rem; color: var(--rose); line-height: 1; flex: none; }
+.faq details[open] summary::after { content: "\2212"; }
+.faq details p { padding: 0 2rem 1.25rem 0; color: var(--muted); max-width: 40em; }
+
+/* Clinics + closing */
+.clinics { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(1.5rem, 5vw, 4rem); align-items: center; }
+.clinics ul { display: flex; flex-direction: column; gap: 0.5rem; color: var(--band-muted); }
+.clinics ul li { display: grid; grid-template-columns: 1.2rem minmax(0, 1fr); gap: 0.5rem; }
+.clinics ul li::before { content: "◆"; color: var(--brass); font-size: 0.6rem; line-height: 1.7rem; }
+.close { text-align: center; }
+.close .stack { align-items: center; }
+.close .signup { width: 100%; }
+.close .lede { margin-inline: auto; }
+footer { padding-block: 2rem 2.5rem; border-top: 1px solid var(--line); font-size: 0.82rem; color: var(--muted); }
+footer .wrap { display: flex; flex-direction: column; gap: 0.6rem; max-width: 1120px; }
+footer p { max-width: 70em; }
+
+@media (max-width: 860px) {
+  .hero__grid, .calc, .trust, .clinics { grid-template-columns: minmax(0, 1fr); }
+  .gripes, .steps { grid-template-columns: minmax(0, 1fr); }
+  .gripes li, .gripes li + li { padding: 1.4rem 0; border-left: 0; border-bottom: 1px solid var(--band-line); }
+  .compare { grid-template-columns: minmax(0, 1fr); }
+  .compare li:nth-child(odd), .compare li:nth-child(even) { padding-inline: 0; border-left: 0; }
+  .top nav a:not(.btn) { display: none; }
+}
+@media (max-width: 480px) {
+  .compare li { grid-template-columns: 3rem minmax(0, 1fr); }
+  .brand__tag { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Tulsa Glow Ledger home">
+      <span class="brand__name">Glow <i>Ledger</i></span>
+      <span class="brand__tag">Tulsa metro</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#calculator">Is it worth it?</a>
+      <a href="#clinics">For clinics</a>
+      <a class="btn" href="#get">Get the comparison</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <ul class="towns eyebrow" aria-label="Areas covered">
+          <li>Tulsa</li><li>Jenks</li><li>Broken Arrow</li><li>Bixby</li><li>Owasso</li>
+        </ul>
+        <h1>Every Tulsa med spa membership, <em>side by side.</em></h1>
+        <p class="lede">Monthly fee. What you get for it. The member Botox price. How you cancel. One free sheet, with a date on every number, so you can tell a real deal from a subscription you'll forget you have.</p>
+        <form class="signup" id="get" data-signup novalidate>
+          <div class="signup__row">
+            <label class="sr" for="email-hero" hidden>Email address</label>
+            <input type="email" id="email-hero" name="email" placeholder="you@example.com" autocomplete="email" aria-label="Email address" required>
+            <button class="btn" type="submit" id="submit-hero">Get My Free Comparison</button>
+          </div>
+          <p class="fine" data-msg>Free. One email when the first edition is ready, then only when a price or term changes.</p>
+        </form>
+      </div>
+
+      <div class="hero__sheet">
+        <div class="fan" aria-hidden="true"></div>
+        <figure class="deco">
+          <div class="deco__in">
+            <div class="sheet__head">
+              <span class="sheet__title">The working sheet</span>
+              <span class="sheet__meta">Preview · Oct 2026</span>
+            </div>
+            <div class="plan">
+              <div class="plan__top"><span class="plan__name">Inject Aesthetics and Wellness</span><span class="plan__fee">$35–$225<small>/mo</small></span></div>
+              <div class="chips"><span class="chip"><b>Tiers</b> several</span><span class="chip"><b>Credits</b> verifying</span><span class="chip"><b>Cancel</b> verifying</span></div>
+            </div>
+            <div class="plan">
+              <div class="plan__top"><span class="plan__name">Emerge Medical Spa</span><span class="plan__fee">from $125<small>/mo</small></span></div>
+              <div class="chips"><span class="chip"><b>Discounts</b> on treatments</span><span class="chip"><b>Cancel</b> verifying</span></div>
+            </div>
+            <div class="plan">
+              <div class="plan__top"><span class="plan__name">Hobbs Salon + Med Spa</span><span class="plan__fee">$199<small>/mo</small></span></div>
+              <div class="chips"><span class="chip"><b>Credits</b> verifying</span><span class="chip"><b>Cancel</b> verifying</span></div>
+            </div>
+            <figcaption class="sheet__foot">Fees as listed on each clinic's public membership page, checked Oct 2026 and not yet confirmed by the clinic. Appearing here is not an endorsement, a ranking, or a partnership.</figcaption>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">The problem</p>
+        <h2>Joining shouldn't feel like a gamble.</h2>
+        <p class="lede">Tulsa-area memberships run from about $35 to $225 a month, and no two are built the same. Star ratings can't tell you what you'll pay. The terms can, if you can find them.</p>
+      </div>
+      <ul class="gripes">
+        <li><q>Does my fee turn into credit, or is it just gone?</q><p>Some plans bank your monthly fee toward treatments. Others trade it for perks and a discount. Same price, very different math.</p></li>
+        <li><q>What's the member price on Botox?</q><p>Public menus here list roughly $10 to $13 a unit. A dollar or two off per unit matters, but only once it beats the fee.</p></li>
+        <li><q>How do I get out?</q><p>Minimum terms, notice periods, and what happens to unused credits are usually on page two. We put them on page one.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band" id="calculator">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Try it now</p>
+        <h2>Is a membership worth it <em>for you?</em></h2>
+        <p class="lede">Move the sliders to match your routine. The math uses publicly listed Tulsa-area price ranges, so treat it as a sketch until you have a clinic's real terms.</p>
+      </div>
+      <div class="calc">
+        <div class="calc__inputs">
+          <div class="field">
+            <label class="field__label" for="fee">Monthly membership fee <output id="fee-out" for="fee">$125</output></label>
+            <input type="range" id="fee" min="35" max="225" step="5" value="125">
+          </div>
+          <div class="field">
+            <label class="field__label" for="units">Botox units you get in a year <output id="units-out" for="units">120 units</output></label>
+            <input type="range" id="units" min="0" max="240" step="10" value="120">
+            <small>For example, 40 units three times a year. Non-member price assumed at $13 a unit.</small>
+          </div>
+          <div class="field">
+            <label class="field__label" for="disc">Member discount per unit <output id="disc-out" for="disc">$3 off</output></label>
+            <input type="range" id="disc" min="0" max="4" step="0.5" value="3">
+          </div>
+          <div class="field">
+            <label class="field__label" for="perks">Included perks you'd really use <output id="perks-out" for="perks">$0 / mo</output></label>
+            <input type="range" id="perks" min="0" max="150" step="5" value="0">
+            <small>A monthly facial you'd have paid for anyway counts. One you'd skip doesn't.</small>
+          </div>
+          <label class="toggle" for="banked">
+            <input type="checkbox" id="banked" checked>
+            <span>My fee banks as treatment credit<small>Unchecked means the fee buys access and perks, and treatments cost extra.</small></span>
+          </label>
+        </div>
+
+        <div class="deco">
+          <div class="deco__in result" aria-live="polite">
+            <p class="result__verdict" id="verdict" data-tone="good"></p>
+            <div class="bars">
+              <div>
+                <div class="bar__row"><span>Paying as you go</span><span class="num" id="cost-payg"></span></div>
+                <div class="bar__track"><div class="bar__fill" id="bar-payg"></div></div>
+              </div>
+              <div>
+                <div class="bar__row"><span>As a member</span><span class="num" id="cost-member"></span></div>
+                <div class="bar__track"><div class="bar__fill bar__fill--member" id="bar-member"></div></div>
+              </div>
+            </div>
+            <p class="result__note" id="note"></p>
+            <a class="btn" href="#get">Send me the real numbers</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--sunk">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">What's on the sheet</p>
+        <h2>Four answers every plan owes you.</h2>
+      </div>
+      <ul class="compare">
+        <li><span class="glyph" aria-hidden="true">$</span><h3>The true monthly cost</h3><p>Every tier and its fee, from $35 starter plans to $225 top tiers, in one column you can sort.</p></li>
+        <li><span class="glyph" aria-hidden="true">+</span><h3>What the fee buys</h3><p>Banked credits, included treatments, and member discounts, written the same way for every clinic.</p></li>
+        <li><span class="glyph" aria-hidden="true">u</span><h3>The member Botox price</h3><p>Per unit, next to the non-member price, so the saving is a number and not a vibe.</p></li>
+        <li><span class="glyph" aria-hidden="true">×</span><h3>The way out</h3><p>Minimum commitment, notice period, and whether unused credits roll over, expire, or leave with you.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">How it works</p>
+        <h2>Three steps. None of them is a sales call.</h2>
+      </div>
+      <ol class="steps">
+        <li><h3>Tell us where to send it</h3><p>Enter your email. That's the whole form.</p></li>
+        <li><h3>Compare over coffee</h3><p>The first edition arrives as one side-by-side sheet covering Tulsa, Jenks, Broken Arrow, Bixby and Owasso.</p></li>
+        <li><h3>Hear when something changes</h3><p>A short note when a clinic changes a price or a term. Nothing else.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="band band--sunk">
+    <div class="wrap trust">
+      <div class="stack">
+        <p class="eyebrow">How we stay honest</p>
+        <h2>Paid placement never touches the numbers.</h2>
+        <p class="lede">Clinics can pay for a featured profile. They can't pay to change a price, hide a term, or move up a ranking, because there isn't one.</p>
+      </div>
+      <ul class="rules">
+        <li><span><strong>Every figure has a source and a date.</strong> You see where a number came from and when we last checked it.</span></li>
+        <li><span><strong>Featured means featured.</strong> Sponsored profiles are labeled, every time.</span></li>
+        <li><span><strong>Your email stays with us.</strong> A clinic only hears from you if you ask for a consultation.</span></li>
+        <li><span><strong>We compare prices, not medicine.</strong> Nothing here is medical advice or a clinical endorsement. Check credentials and talk to a licensed provider.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="band">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Fair questions</p>
+        <h2>Before you hand over your email.</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>What's in the comparison?</summary><p>For each clinic: membership tiers and monthly fees, what the fee includes, member discounts such as the Botox per-unit price, commitment and cancellation terms, locations, and the date each item was last verified.</p></details>
+        <details><summary>Is it out yet?</summary><p>Not yet. We're checking each clinic's terms now. Sign up and the first edition comes to you the day it's ready.</p></details>
+        <details><summary>How current are the numbers?</summary><p>Each one shows its own last-verified date. If a clinic hasn't confirmed something, the sheet says so instead of guessing.</p></details>
+        <details><summary>Will you share my contact details?</summary><p>No. Your email is used for the comparison and price-change notes. Clinics don't get it unless you request a consultation yourself.</p></details>
+        <details><summary>Do I have to join anything?</summary><p>No. If the math says pay as you go, pay as you go. The calculator above will tell you the same thing.</p></details>
+        <details><summary>How does this make money?</summary><p>Clinics can buy a labeled featured profile, and can receive consultation requests from readers who opt in. Neither changes what the sheet reports.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--dark" id="clinics">
+    <div class="wrap clinics">
+      <div class="stack">
+        <p class="eyebrow">For clinic owners</p>
+        <h2>Your membership is good. Let people see why.</h2>
+        <p class="lede">Shoppers reading this sheet are already deciding where to commit a monthly fee. Confirm your terms and we'll mark your listing verified.</p>
+        <ul>
+          <li>Basic listing and verification are free.</li>
+          <li>You approve your own prices and terms before they publish.</li>
+          <li>Corrections and removals are handled on request.</li>
+        </ul>
+      </div>
+      <form class="signup" data-signup novalidate>
+        <div class="signup__row">
+          <input type="text" id="clinic-name" name="clinic" placeholder="Clinic name" aria-label="Clinic name" autocomplete="organization">
+        </div>
+        <div class="signup__row">
+          <input type="email" id="email-clinic" name="email" placeholder="owner@yourclinic.com" aria-label="Work email" autocomplete="email" required>
+          <button class="btn btn--ghost" type="submit" id="submit-clinic">Verify My Listing</button>
+        </div>
+        <p class="fine" data-msg>We'll reply with your draft listing to review.</p>
+      </form>
+    </div>
+  </section>
+
+  <section class="band close">
+    <div class="wrap stack">
+      <p class="eyebrow">Free first edition</p>
+      <h2>Know the price before you <em>commit to the glow.</em></h2>
+      <p class="lede">One sheet. Every membership we can verify from Owasso to Bixby. Yours when it's ready.</p>
+      <form class="signup" data-signup novalidate>
+        <div class="signup__row">
+          <input type="email" id="email-close" name="email" placeholder="you@example.com" aria-label="Email address" autocomplete="email" required>
+          <button class="btn" type="submit" id="submit-close">Get My Free Comparison</button>
+        </div>
+        <p class="fine" data-msg>Free. Unsubscribe in one click.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Glow Ledger is an independent price and terms comparison for the Tulsa metro. It is not a medical provider and does not give medical advice, endorse any clinic, or rate clinical quality.</p>
+    <p>Prices and terms come from public clinic pages or clinic confirmation and can change. Always confirm with the clinic before you buy. Clinics can request a correction or removal at any time.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var LIST = 13; // publicly listed non-member Botox price per unit, top of local range
+  var $ = function (id) { return document.getElementById(id); };
+  var usd = function (n) { return '$' + Math.round(n).toLocaleString('en-US'); };
+
+  function calc() {
+    var fee = +$('fee').value, units = +$('units').value, disc = +$('disc').value,
+        perks = +$('perks').value, banked = $('banked').checked;
+    var payg = units * LIST;
+    var treat = units * (LIST - disc);
+    var fees = fee * 12;
+    var member = (banked ? Math.max(fees, treat) : fees + treat) - perks * 12;
+    if (member < 0) member = 0;
+    var diff = payg - member;
+
+    $('fee-out').textContent = usd(fee);
+    $('units-out').textContent = units + ' units';
+    $('disc-out').textContent = disc ? '$' + disc + ' off' : 'none';
+    $('perks-out').textContent = usd(perks) + ' / mo';
+    $('cost-payg').textContent = usd(payg) + ' / yr';
+    $('cost-member').textContent = usd(member) + ' / yr';
+
+    var max = Math.max(payg, member, 1);
+    $('bar-payg').style.width = (payg / max * 100) + '%';
+    $('bar-member').style.width = (member / max * 100) + '%';
+
+    var v = $('verdict');
+    if (Math.abs(diff) < 25) {
+      v.dataset.tone = 'even';
+      v.innerHTML = 'It’s <strong>a wash.</strong> The terms decide it.';
+    } else if (diff > 0) {
+      v.dataset.tone = 'good';
+      v.innerHTML = 'Membership saves you about <strong>' + usd(diff) + ' a year.</strong>';
+    } else {
+      v.dataset.tone = 'bad';
+      v.innerHTML = 'You’d pay about <strong>' + usd(-diff) + ' more a year</strong> as a member.';
+    }
+
+    var unused = banked ? fees - treat : 0;
+    $('note').innerHTML = unused > 0
+      ? 'You’d bank <b>' + usd(unused) + '</b> in credits beyond your Botox. Whether they roll over, expire, or cover other treatments is the term to check.'
+      : banked
+        ? 'Your treatments use up every credit, so the per-unit discount is doing the work. Check that it applies to all units.'
+        : 'With no banked credit, the fee has to earn its keep through perks and discounts. Check the minimum commitment before you join.';
+  }
+
+  ['fee', 'units', 'disc', 'perks', 'banked'].forEach(function (id) {
+    $(id).addEventListener('input', calc);
+    $(id).addEventListener('change', calc);
+  });
+  calc();
+
+  // Sign-up forms. PROTOTYPE: not yet connected to an email service.
+  // Replace the body of this handler with a POST to your email provider.
+  document.querySelectorAll('[data-signup]').forEach(function (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var email = form.querySelector('input[type="email"]');
+      var msg = form.querySelector('[data-msg]');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+        msg.textContent = 'That email doesn’t look right. Check it and try again.';
+        email.focus();
+        return;
+      }
+      msg.className = 'fine signup__done';
+      msg.textContent = 'Got it. (Prototype: this form isn’t connected to an email service yet, so nothing was saved.)';
+      form.querySelectorAll('input, button').forEach(function (el) { el.disabled = true; });
+    });
+  });
+})();
+</script>
+</body>
+</html>
